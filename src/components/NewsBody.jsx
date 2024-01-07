@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import News1 from './News1';
-import Spinner from './Spinner';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import '../css/news.css';
 
@@ -8,11 +7,9 @@ function NewsBody(props) {
   const [news, setNews] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
-  const [loading, setLoading] = useState(true);
   const totalPages = Math.ceil(totalPage / 12);
 
   const fetchMoreData = async () => {
-    setLoading(true);
 
     try {
       const response = await fetch(
@@ -21,17 +18,14 @@ function NewsBody(props) {
 
       const result = await response.json();
       setNews((prevNews) => [...prevNews, ...result.articles]);
-      setLoading(false);
       setTotalPage(result.totalResults);
     } catch (error) {
       console.error('Error fetching more data:', error);
-      setLoading(false);
     }
   };
 
   const handleNext = () => {
     if (page >= totalPages) {
-      setLoading(false)
       return;
     } else {
       setPage((prevPage) => prevPage + 1);
@@ -54,7 +48,6 @@ function NewsBody(props) {
         dataLength={news.length}
         next={handleNext}
         hasMore={page < totalPages}
-        loader={<Spinner />}
         endMessage={
           <p style={{ textAlign: 'center' }}>
             <b></b>
